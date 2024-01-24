@@ -1,0 +1,37 @@
+# action.yml
+name: 'Install and run tests'
+description: 'Install the CodeComet CLI and run tests'
+inputs:
+  version:  # id of input
+    description: 'The version of the CodeComet CLI to install'
+    required: true
+    default: '0.1.0'
+  test-suite:
+    description: 'The name of your test suite'
+    required: false
+    default: ''
+  test-command:
+    description: 'The test command you wish to run. If left blank, will not run any commands. You will be able to use the codecomet executable later in your action.'
+    required: false
+    default: ''
+runs:
+  using: 'composite'
+  steps:
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+    - name: "Install codecomet"
+      run: install.sh ${{ inputs.version }}
+      shell: bash
+    - name: "Print out env variables"
+      run: env
+      shell: bash
+    - name: "Run tests"
+      if: ${{ inputs.test-suite != '' && inputs.test-command != ''}}
+      run: codecomet -s ${{ inputs.test-suite }} -- ${{ inputs.test-command }}
+      shell: bash
+    - name: "Run tests"
+      if: ${{ inputs.test-suite == '' && inputs.test-command != ''}}
+      run: codecomet -- ${{ inputs.test-command }}
+      shell: bash
+    # Otherwise if inputs.test-command is empty, don't run anything. User can use
+    # the codecomet cli directly.
