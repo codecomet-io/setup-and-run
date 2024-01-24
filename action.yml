@@ -5,7 +5,7 @@ inputs:
   version:  # id of input
     description: 'The version of the CodeComet CLI to install'
     required: true
-    default: '0.1.0'
+    default: '1.0.0'
   test-suite:
     description: 'The name of your test suite'
     required: false
