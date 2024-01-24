@@ -21,6 +21,8 @@ version_le() {
 detect_platform() {
     case "$(uname -s)-$(uname -m)" in
     "Linux-x86_64") echo "linux-x86_64" ;;
+    "Darwin-x86_64") echo "osx-universal" ;;
+    "Darwin-arm64") echo "osx-universal" ;;
     # "Linux-aarch64") echo "linux-arm64" ;;
     *) echo "unsupported" ;;
     esac
