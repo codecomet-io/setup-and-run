@@ -35,5 +35,6 @@ runs:
     - name: "Ingest JUnit"
       if: ${{ inputs.junit_file != '' }}
       run: codecomet --suite=${{ inputs.test_suite }} --coverage=${{ inputs.coverage_file }} junit ${{ inputs.junit_file }}
+      shell: bash
     # Otherwise if test_command and junit_file are empty, don't run anything. User can use
     # the codecomet cli directly.
