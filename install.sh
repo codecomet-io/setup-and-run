@@ -20,10 +20,8 @@ version_le() {
 
 detect_platform() {
     case "$(uname -s)-$(uname -m)" in
-    "Linux-x86_64") echo "linux-x86_64" ;;
-    "Darwin-x86_64") echo "osx-universal" ;;
-    "Darwin-arm64") echo "osx-universal" ;;
-    # "Linux-aarch64") echo "linux-arm64" ;;
+    "Linux-x86_64") echo "linux-amd64" ;;
+    "Linux-aarch64") echo "linux-arm64" ;;
     *) echo "unsupported" ;;
     esac
 }
@@ -52,14 +50,14 @@ install_cc_cli() {
     fi
 
     echo "Installing the CodeComet CLI..."
-    set -x; $sudo unzip -d /usr/local/bin ./"$file_path" ; set +x
+    set -x; $sudo tar -xzvf "$file_path" -C /usr/local/bin ; set +x
 
 }
 
 sudo=$(set_sudo)
 
 # Check for required commands
-for cmd in curl unzip; do
+for cmd in curl tar; do
     if ! command -v "$cmd" &>/dev/null; then
         echo "Error: $cmd is required. Please install it and try again." >&2
         exit 1
@@ -80,7 +78,7 @@ if [ "$platform" == "unsupported" ]; then
     exit 1
 fi
 
-file_extension="zip"
+file_extension="tar.gz"
 
 # Download and install CodeComet CLI
 if ! download_cc_cli "$version" "$platform" "$file_extension"; then

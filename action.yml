@@ -5,33 +5,35 @@ inputs:
   version:  # id of input
     description: 'The version of the CodeComet CLI to install'
     required: true
-    default: '1.0.0'
-  test-suite:
+    default: '1.1.0'
+  test_suite:
     description: 'The name of your test suite'
     required: false
     default: ''
-  test-command:
+  test_command:
     description: 'The test command you wish to run. If left blank, will not run any commands. You will be able to use the codecomet executable later in your action.'
+    required: false
+    default: ''
+  junit_file:
+    description: 'The JUnit XML file you wish to ingest. This option and test_command should be mutually exclusive; use one or the other.'
+    required: false
+    default: ''
+  coverage_file:
+    description: 'The coverage file you wish to ingest, if using the junit_file command.'
     required: false
     default: ''
 runs:
   using: 'composite'
   steps:
-    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
-      shell: bash
     - name: "Install codecomet"
       run: install.sh ${{ inputs.version }}
       shell: bash
-    - name: "Print out env variables"
-      run: env
-      shell: bash
     - name: "Run tests"
-      if: ${{ inputs.test-suite != '' && inputs.test-command != ''}}
-      run: codecomet -s ${{ inputs.test-suite }} -- ${{ inputs.test-command }}
+      if: ${{ inputs.test_command != ''}}
+      run: codecomet --suite=${{ inputs.test_suite }} -- ${{ inputs.test_command }}
       shell: bash
-    - name: "Run tests"
-      if: ${{ inputs.test-suite == '' && inputs.test-command != ''}}
-      run: codecomet -- ${{ inputs.test-command }}
-      shell: bash
-    # Otherwise if inputs.test-command is empty, don't run anything. User can use
+    - name: "Ingest JUnit"
+      if: ${{ inputs.junit_file != '' }}
+      run: codecomet --suite=${{ inputs.test_suite }} --coverage=${{ inputs.coverage_file }} junit ${{ inputs.junit_file }}
+    # Otherwise if test_command and junit_file are empty, don't run anything. User can use
     # the codecomet cli directly.
