@@ -6,7 +6,7 @@ inputs:
     description: 'The version of the CodeComet CLI to install'
     required: true
     default: '1.1.0'
-  test_suite:
+  test_suite_name:
     description: 'The name of your test suite'
     required: false
     default: ''
@@ -32,11 +32,11 @@ runs:
       shell: bash
     - name: "Run tests"
       if: ${{ inputs.test_command != ''}}
-      run: codecomet --suite="${{ inputs.test_suite }}" -- ${{ inputs.test_command }}
+      run: codecomet --suite="${{ inputs.test_suite_name }}" -- ${{ inputs.test_command }}
       shell: bash
     - name: "Ingest JUnit"
       if: ${{ inputs.junit_file != '' }}
-      run: codecomet --suite="${{ inputs.test_suite }}" --coverage="${{ inputs.coverage_file }}" junit "${{ inputs.junit_file }}"
+      run: codecomet --suite="${{ inputs.test_suite_name }}" --coverage="${{ inputs.coverage_file }}" junit "${{ inputs.junit_file }}"
       shell: bash
     # Otherwise if test_command and junit_file are empty, don't run anything. User can use
     # the codecomet cli directly.
